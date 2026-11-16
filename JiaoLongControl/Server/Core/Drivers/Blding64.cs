@@ -93,7 +93,10 @@ public class Blding64 : IDisposable
         EC_RAM_WRITE(0xB20, (byte)mask);
     }
 
-    public void RemoveFanSpeed()
+    // 不能叫 RemoveFanSpeed：FanController 上同名的 CommandResult 方法会一起进入 AutoDual
+    // 类接口。CLR 把后出现的那个改名为 RemoveFanSpeed_2，WebView2 按名调用命中这个 void
+    // 方法，前端拿不到 toJson()，只能走到「操作失败，请检查桥接服务」。
+    protected void ClearManualFanOverride()
     {
         GpuFanSetSpeed(0);
         CpuFanSetSpeed(0);
